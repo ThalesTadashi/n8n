@@ -192,7 +192,7 @@ const TEMPLATE_HTML = `<!DOCTYPE html>
 
         <div class="hero-title">
             <h1>Wow,</h1>
-            <p>You're on fire! 🔥</p>
+            <p>You're on fire! &#128293;</p>
         </div>
 
         <div class="main-card">
