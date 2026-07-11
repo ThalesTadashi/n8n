@@ -53,12 +53,28 @@ function pcmParaMp3(pcmBuffer, sampleRate = 24000, channels = 1) {
   return Buffer.concat(chunks);
 }
 
+function sanitizarTexto(texto) {
+  return texto
+    // remove emojis e símbolos pictográficos
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/gu, '')
+    // remove barras (mantém apóstrofos e acentos)
+    .replace(/[\/\\]/g, '')
+    // quebras de linha e tabs viram espaço
+    .replace(/[\n\r\t]+/g, ' ')
+    // colapsa espaços múltiplos
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 app.post('/tts', rateLimit, async (req, res) => {
   try {
-    const { apiKey, texto, voice = 'Kore' } = req.body;
+    const { apiKey, texto: textoBruto, voice = 'Kore' } = req.body;
 
     if (!apiKey) return res.status(400).json({ error: 'Campo "apiKey" é obrigatório' });
-    if (!texto) return res.status(400).json({ error: 'Campo "texto" é obrigatório' });
+    if (!textoBruto) return res.status(400).json({ error: 'Campo "texto" é obrigatório' });
+
+    const texto = sanitizarTexto(textoBruto);
+    if (!texto) return res.status(400).json({ error: 'Texto vazio após sanitização' });
 
     const orResponse = await fetch('https://openrouter.ai/api/v1/audio/speech', {
       method: 'POST',
