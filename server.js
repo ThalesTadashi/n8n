@@ -4,6 +4,14 @@ import * as lamejs from '@breezystack/lamejs';
 const app = express();
 app.use(express.json());
 
+// Captura erro de JSON malformado no body e devolve resposta limpa
+app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed' || err instanceof SyntaxError) {
+    return res.status(400).json({ error: 'JSON inválido no corpo da requisição', detalhe: err.message });
+  }
+  next(err);
+});
+
 const PORT = process.env.PORT || 3000;
 const LIMITE_REQ = 5;
 const JANELA_MS = 60 * 1000; // 1 minuto
