@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "express": "^4.19.2",
-    "@breezystack/lamejs": "^1.2.7"
+    "@breezystack/lamejs": "^1.2.7",
+    "puppeteer-core": "^22.15.0"
   }
 }
